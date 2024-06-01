@@ -1,0 +1,238 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "FastAPI",
+      "version": "0.1.0"
+    },
+    "paths": {
+      "/articles": {
+        "get": {
+          "summary": "Get Articles",
+          "operationId": "get_articles_articles_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "title": "Response Get Articles Articles Get",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ArticleCreate"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Create Article",
+          "operationId": "create_article_articles_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleCreate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/articles/{id}": {
+        "get": {
+          "summary": "Get Article",
+          "operationId": "get_article_articles__id__get",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "title": "Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ArticleCreate"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Article not found"
+            }
+          }
+        },
+        "put": {
+          "summary": "Update Article",
+          "operationId": "update_article_articles__id__put",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "title": "Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleCreate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Article not found"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete Article",
+          "operationId": "delete_article_articles__id__delete",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "title": "Id",
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Article not found"
+            }
+          }
+        }
+      },
+      "/articles/save": {
+        "post": {
+          "summary": "Save Articles",
+          "operationId": "save_articles_articles_save_post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleList"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ArticleCreate": {
+          "title": "ArticleCreate",
+          "required": ["title", "body", "photos"],
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "photos": {
+              "type": "string"
+            }
+          }
+        },
+        "ArticleUpdate": {
+          "title": "ArticleUpdate",
+          "required": ["id"],
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "title": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            },
+            "photos": {
+              "type": "string"
+            }
+          }
+        },
+        "ArticleList": {
+          "title": "ArticleList",
+          "type": "object",
+          "properties": {
+            "root": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ArticleUpdate"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
