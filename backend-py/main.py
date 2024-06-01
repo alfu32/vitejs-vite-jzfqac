@@ -1,8 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 from sqlalchemy import create_engine, Column, Integer, String, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -32,8 +31,8 @@ class ArticleUpdate(BaseModel):
     body: str = None
     photos: str = None
 
-class ArticleList(BaseModel):
-    __root__: list[ArticleUpdate]
+class ArticleList(RootModel):
+    root: list[ArticleUpdate]
 
 def get_db():
     db = SessionLocal()
@@ -88,7 +87,7 @@ def delete_article(id: int, db: Session = Depends(get_db)):
 
 @app.post("/articles/save", response_model=str)
 def save_articles(articles: ArticleList, db: Session = Depends(get_db)):
-    for article in articles.__root__:
+    for article in articles.root:
         if article.id:
             db_article = db.query(Article).filter(Article.id == article.id).first()
             if db_article:
