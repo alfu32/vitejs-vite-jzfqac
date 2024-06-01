@@ -13,12 +13,17 @@ const App = () => {
     setSelectedArticleId(null);
   };
 
+  const handleChangeArticle = (id) => {
+    setSelectedArticleId(id);
+  };
+
   return (
     <div>
       {selectedArticleId ? (
-        <ArticleViewer
-          articleId={selectedArticleId}
-          onBackToList={handleBackToList}
+        <ArticleViewer 
+          articleId={selectedArticleId} 
+          onBackToList={handleBackToList} 
+          onArticleChange={handleChangeArticle} 
         />
       ) : (
         <ArticleList onSelectArticle={handleSelectArticle} />
