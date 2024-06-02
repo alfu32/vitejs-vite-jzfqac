@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel, RootModel
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from typing import List, Optional
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -21,19 +22,19 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 class ArticleCreate(BaseModel):
-    id: int | None = None
+    id: Optional[int] = None
     title: str = ""
     body: str = ""
     photos: str = ""
 
 class ArticleUpdate(BaseModel):
-    id: int
-    title: str | None = None
-    body: str | None = None
-    photos: str | None = None
+    id: Optional[int] = None
+    title: Optional[str] = None
+    body: Optional[str] = None
+    photos: Optional[str] = None
 
 class ArticleList(RootModel):
-    root: list[ArticleUpdate]
+    root: List[ArticleUpdate]
 
 def get_db():
     db = SessionLocal()
@@ -50,7 +51,7 @@ def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     db.refresh(db_article)
     return db_article
 
-@app.get("/articles", response_model=list[ArticleCreate])
+@app.get("/articles", response_model=List[ArticleCreate])
 def get_articles(db: Session = Depends(get_db)):
     articles = db.query(Article).all()
     return articles
@@ -67,11 +68,11 @@ def update_article(id: int, article: ArticleCreate, db: Session = Depends(get_db
     db_article = db.query(Article).filter(Article.id == id).first()
     if db_article is None:
         raise HTTPException(status_code=404, detail="Article not found")
-    if article.title:
+    if article.title is not None:
         db_article.title = article.title
-    if article.body:
+    if article.body is not None:
         db_article.body = article.body
-    if article.photos:
+    if article.photos is not None:
         db_article.photos = article.photos
     db.commit()
     db.refresh(db_article)
@@ -86,7 +87,7 @@ def delete_article(id: int, db: Session = Depends(get_db)):
     db.commit()
     return db_article
 
-@app.post("/articles/save", response_model=list[ArticleCreate])
+@app.post("/articles/save", response_model=List[ArticleCreate])
 def save_articles(articles: ArticleList, db: Session = Depends(get_db)):
     saved_articles = []
     for article in articles.root:

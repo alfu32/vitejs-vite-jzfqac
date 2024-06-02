@@ -33,12 +33,13 @@ Content-Type: application/json
 
 [
     {
-        "id": 1,
-        "title": "Updated Title"
+        "id": 5,
+        "title":"Updated Title",
+        "body": "From the mass upsert api endpoint"
     },
     {
         "title": "Another New Article",
-        "body": "This is another new article",
+        "body": "This is another new article\nFrom the mass upsert api endpoint",
         "photos": "[]"
     }
 ]
