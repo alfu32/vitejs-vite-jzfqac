@@ -1,0 +1,44 @@
+### Get all articles
+GET http://localhost:8000/articles
+
+### Get a single article by ID
+GET http://localhost:8000/articles/1
+
+### Create a new article
+POST http://localhost:8000/articles
+Content-Type: application/json
+
+{
+    "title": "New Article",
+    "body": "This is a new article",
+    "photos": "[]"
+}
+
+### Update an article
+PUT http://localhost:8000/articles/1
+Content-Type: application/json
+
+{
+    "title": "Updated Article Title",
+    "body": "Updated article body",
+    "photos": "[]"
+}
+
+### Delete an article
+DELETE http://localhost:8000/articles/1
+
+### Save a list of articles
+POST http://localhost:8000/articles/save
+Content-Type: application/json
+
+[
+    {
+        "id": 1,
+        "title": "Updated Title"
+    },
+    {
+        "title": "Another New Article",
+        "body": "This is another new article",
+        "photos": "[]"
+    }
+]

@@ -21,15 +21,16 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 class ArticleCreate(BaseModel):
+    id: int | None = None
     title: str = ""
     body: str = ""
     photos: str = ""
 
 class ArticleUpdate(BaseModel):
     id: int
-    title: str = None
-    body: str = None
-    photos: str = None
+    title: str | None = None
+    body: str | None = None
+    photos: str | None = None
 
 class ArticleList(RootModel):
     root: list[ArticleUpdate]
@@ -41,13 +42,13 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/articles", response_model=str)
+@app.post("/articles", response_model=ArticleCreate)
 def create_article(article: ArticleCreate, db: Session = Depends(get_db)):
     db_article = Article(title=article.title, body=article.body, photos=article.photos)
     db.add(db_article)
     db.commit()
     db.refresh(db_article)
-    return "Article created"
+    return db_article
 
 @app.get("/articles", response_model=list[ArticleCreate])
 def get_articles(db: Session = Depends(get_db)):
@@ -61,7 +62,7 @@ def get_article(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Article not found")
     return article
 
-@app.put("/articles/{id}", response_model=str)
+@app.put("/articles/{id}", response_model=ArticleCreate)
 def update_article(id: int, article: ArticleCreate, db: Session = Depends(get_db)):
     db_article = db.query(Article).filter(Article.id == id).first()
     if db_article is None:
@@ -74,19 +75,20 @@ def update_article(id: int, article: ArticleCreate, db: Session = Depends(get_db
         db_article.photos = article.photos
     db.commit()
     db.refresh(db_article)
-    return "Article updated"
+    return db_article
 
-@app.delete("/articles/{id}", response_model=str)
+@app.delete("/articles/{id}", response_model=ArticleCreate)
 def delete_article(id: int, db: Session = Depends(get_db)):
     db_article = db.query(Article).filter(Article.id == id).first()
     if db_article is None:
         raise HTTPException(status_code=404, detail="Article not found")
     db.delete(db_article)
     db.commit()
-    return "Article deleted"
+    return db_article
 
-@app.post("/articles/save", response_model=str)
+@app.post("/articles/save", response_model=list[ArticleCreate])
 def save_articles(articles: ArticleList, db: Session = Depends(get_db)):
+    saved_articles = []
     for article in articles.root:
         if article.id:
             db_article = db.query(Article).filter(Article.id == article.id).first()
@@ -99,14 +101,17 @@ def save_articles(articles: ArticleList, db: Session = Depends(get_db)):
                     db_article.photos = article.photos
                 db.commit()
                 db.refresh(db_article)
+                saved_articles.append(db_article)
             else:
                 new_article = Article(id=article.id, title=article.title or "", body=article.body or "", photos=article.photos or "")
                 db.add(new_article)
                 db.commit()
                 db.refresh(new_article)
+                saved_articles.append(new_article)
         else:
             new_article = Article(title=article.title or "", body=article.body or "", photos=article.photos or "")
             db.add(new_article)
             db.commit()
             db.refresh(new_article)
-    return "Articles saved"
+            saved_articles.append(new_article)
+    return saved_articles

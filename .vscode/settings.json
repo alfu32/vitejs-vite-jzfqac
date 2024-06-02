@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "articles-react-python-chatgpt",
+            "group": "articles-react-python-chatgpt",
+            "database": "${workspaceFolder:articles-stackblitz-chatgpt}/backend-py/test.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
